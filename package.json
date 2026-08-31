@@ -4,6 +4,6 @@
   "private": true,
   "scripts": {
     "start": "vercel dev",
-    "build": "echo \"Static app ready\""
+    "build": "mkdir -p public && cp index.html public/index.html"
   }
 }
