@@ -1,0 +1,9 @@
+{
+  "name": "interview-coach",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "vercel dev",
+    "build": "echo \"Static app ready\""
+  }
+}

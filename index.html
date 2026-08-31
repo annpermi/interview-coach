@@ -1,0 +1,852 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Interview Coach</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #101314;
+      --panel: #191d1f;
+      --panel-2: #202629;
+      --ink: #f2f4ef;
+      --muted: #a9b2aa;
+      --line: #343b3e;
+      --accent: #8fd17f;
+      --accent-2: #f3c969;
+      --danger: #ee746f;
+      --blue: #85b8ff;
+      --shadow: 0 24px 70px rgba(0, 0, 0, .28);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 20% 0%, rgba(143, 209, 127, .12), transparent 32rem),
+        linear-gradient(135deg, #101314 0%, #151719 48%, #0f1213 100%);
+      color: var(--ink);
+    }
+
+    button, textarea, input, select {
+      font: inherit;
+    }
+
+    button {
+      border: 1px solid var(--line);
+      color: var(--ink);
+      background: var(--panel-2);
+      border-radius: 8px;
+      min-height: 38px;
+      padding: 0 12px;
+      cursor: pointer;
+    }
+
+    button:hover { border-color: #5b676b; }
+    button.primary {
+      background: var(--accent);
+      color: #102010;
+      border-color: transparent;
+      font-weight: 750;
+    }
+
+    button.icon {
+      width: 38px;
+      padding: 0;
+      display: inline-grid;
+      place-items: center;
+    }
+
+    textarea, input, select {
+      width: 100%;
+      color: var(--ink);
+      background: #111516;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 11px 12px;
+      outline: none;
+    }
+
+    textarea:focus, input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(143, 209, 127, .13);
+    }
+
+    textarea {
+      min-height: 126px;
+      resize: vertical;
+      line-height: 1.48;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    aside {
+      border-right: 1px solid var(--line);
+      background: rgba(17, 20, 21, .78);
+      backdrop-filter: blur(14px);
+      padding: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .mark {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      background: conic-gradient(from 220deg, var(--accent), var(--accent-2), var(--blue), var(--accent));
+      position: relative;
+    }
+
+    .mark::after {
+      content: "";
+      position: absolute;
+      inset: 9px;
+      border-radius: 5px;
+      background: #111516;
+    }
+
+    .brand h1 {
+      font-size: 17px;
+      line-height: 1.15;
+      margin: 0;
+      letter-spacing: 0;
+    }
+
+    .brand p {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    nav {
+      display: grid;
+      gap: 7px;
+      margin-bottom: 22px;
+    }
+
+    .nav-button {
+      text-align: left;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: transparent;
+      color: var(--muted);
+      border-color: transparent;
+      justify-content: flex-start;
+    }
+
+    .nav-button.active {
+      color: var(--ink);
+      background: var(--panel-2);
+      border-color: var(--line);
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: currentColor;
+      opacity: .85;
+      flex: 0 0 auto;
+    }
+
+    .sidebar-block {
+      border-top: 1px solid var(--line);
+      padding-top: 18px;
+      margin-top: 18px;
+    }
+
+    .sidebar-block h2 {
+      font-size: 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin: 0 0 10px;
+    }
+
+    .stat {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 13px;
+      margin: 9px 0;
+    }
+
+    .stat strong { color: var(--ink); }
+
+    main {
+      min-width: 0;
+      padding: 22px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .topbar h2 {
+      margin: 0;
+      font-size: clamp(24px, 3vw, 36px);
+      letter-spacing: 0;
+    }
+
+    .topbar p {
+      color: var(--muted);
+      margin: 5px 0 0;
+      max-width: 760px;
+      line-height: 1.45;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(360px, .9fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel {
+      background: rgba(25, 29, 31, .88);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel-header {
+      min-height: 58px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .panel-header h3 {
+      margin: 0;
+      font-size: 15px;
+      letter-spacing: 0;
+    }
+
+    .panel-header small {
+      display: block;
+      color: var(--muted);
+      margin-top: 3px;
+      line-height: 1.25;
+    }
+
+    .panel-body { padding: 16px; }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    label {
+      display: grid;
+      gap: 7px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 130px;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-top: 12px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 6px;
+      padding: 4px;
+      background: #111516;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+
+    .tabs button {
+      min-height: 32px;
+      border-color: transparent;
+      background: transparent;
+      color: var(--muted);
+    }
+
+    .tabs button.active {
+      background: var(--panel-2);
+      color: var(--ink);
+      border-color: var(--line);
+    }
+
+    .answer {
+      display: none;
+      line-height: 1.55;
+    }
+
+    .answer.active { display: block; }
+
+    .answer h4 {
+      margin: 14px 0 8px;
+      font-size: 14px;
+      color: var(--accent-2);
+    }
+
+    .answer p, .answer ul { color: #dbe1da; }
+    .answer ul { padding-left: 20px; }
+    .answer li { margin: 7px 0; }
+
+    .signal {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .meter {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 11px;
+      background: #131718;
+    }
+
+    .meter b {
+      display: block;
+      font-size: 20px;
+      margin-bottom: 2px;
+    }
+
+    .meter span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .notes-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .note {
+      background: #121617;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+    }
+
+    .note strong {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 13px;
+    }
+
+    .note p {
+      color: var(--muted);
+      font-size: 13px;
+      margin: 0;
+      line-height: 1.4;
+    }
+
+    .library {
+      display: grid;
+      gap: 10px;
+    }
+
+    .prompt-card {
+      width: 100%;
+      text-align: left;
+      min-height: 72px;
+      background: #121617;
+      display: grid;
+      align-content: center;
+    }
+
+    .prompt-card span {
+      color: var(--muted);
+      display: block;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+
+    .practice-log {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .practice-log th, .practice-log td {
+      padding: 11px 8px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .practice-log th {
+      color: var(--muted);
+      font-weight: 650;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      padding: 0 8px;
+      border-radius: 999px;
+      background: rgba(143, 209, 127, .12);
+      color: var(--accent);
+      border: 1px solid rgba(143, 209, 127, .28);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .warning {
+      border-left: 3px solid var(--accent-2);
+      padding: 10px 12px;
+      background: rgba(243, 201, 105, .08);
+      color: #eadfbf;
+      line-height: 1.45;
+      border-radius: 6px;
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+
+    .hidden { display: none; }
+
+    @media (max-width: 980px) {
+      .app { grid-template-columns: 1fr; }
+      aside {
+        position: sticky;
+        top: 0;
+        z-index: 3;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+        padding: 14px;
+      }
+      nav {
+        grid-auto-flow: column;
+        grid-auto-columns: minmax(120px, 1fr);
+        overflow-x: auto;
+        margin: 0;
+      }
+      .sidebar-block { display: none; }
+      .workspace { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 680px) {
+      main { padding: 14px; }
+      .topbar { display: grid; }
+      .field-row, .grid-2, .signal { grid-template-columns: 1fr; }
+      .panel-header { align-items: flex-start; flex-direction: column; }
+      .tabs { width: 100%; }
+      .tabs button { flex: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside>
+      <div class="brand">
+        <div class="mark" aria-hidden="true"></div>
+        <div>
+          <h1>Interview Coach</h1>
+          <p>Private prep workspace</p>
+        </div>
+      </div>
+
+      <nav aria-label="Views">
+        <button class="nav-button active" data-view="coach"><span class="dot"></span>Coach</button>
+        <button class="nav-button" data-view="library"><span class="dot"></span>Question bank</button>
+        <button class="nav-button" data-view="log"><span class="dot"></span>Practice log</button>
+      </nav>
+
+      <div class="sidebar-block">
+        <h2>Session</h2>
+        <div class="stat"><span>Questions</span><strong id="questionCount">0</strong></div>
+        <div class="stat"><span>Saved notes</span><strong id="noteCount">0</strong></div>
+        <div class="stat"><span>Mode</span><strong>Practice</strong></div>
+      </div>
+    </aside>
+
+    <main>
+      <section class="topbar">
+        <div>
+          <h2 id="viewTitle">Coach</h2>
+          <p id="viewSubtitle">Paste a question from a mock interview and get a structured answer plan, risks to avoid, and a sharper follow-up question.</p>
+        </div>
+        <button class="primary" id="saveSession">Save session</button>
+      </section>
+
+      <section id="coachView" class="workspace">
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <h3>Question workspace</h3>
+              <small>Use this for prep, mock interviews, and post-call review.</small>
+            </div>
+            <button class="icon" id="clearQuestion" title="Clear question" aria-label="Clear question">×</button>
+          </div>
+          <div class="panel-body">
+            <div class="warning">Designed for honest preparation. It will coach your thinking, not provide stealth live-interview cheating.</div>
+            <div class="field-row">
+              <label>Role
+                <input id="roleInput" placeholder="Senior frontend engineer">
+              </label>
+              <label>Company or domain
+                <input id="companyInput" placeholder="Fintech, SaaS, marketplace">
+              </label>
+              <label>Question type
+                <select id="typeInput">
+                  <option>Behavioral</option>
+                  <option>System design</option>
+                  <option>Technical</option>
+                  <option>Leadership</option>
+                  <option>Product sense</option>
+                </select>
+              </label>
+            </div>
+            <label>Interview question
+              <textarea id="questionInput" placeholder="Paste or type the question you want to practice..."></textarea>
+            </label>
+            <div class="actions">
+              <button class="primary" id="coachButton">Generate coaching</button>
+              <button id="sampleButton">Try sample</button>
+              <button id="saveNoteButton">Save note</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <h3>Answer builder</h3>
+              <small>Framework, talking points, and traps.</small>
+            </div>
+            <div class="tabs" role="tablist">
+              <button class="active" data-tab="plan">Plan</button>
+              <button data-tab="story">Story</button>
+              <button data-tab="review">Review</button>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div id="planTab" class="answer active"></div>
+            <div id="storyTab" class="answer"></div>
+            <div id="reviewTab" class="answer"></div>
+            <div class="signal">
+              <div class="meter"><b id="clarityScore">--</b><span>Clarity</span></div>
+              <div class="meter"><b id="depthScore">--</b><span>Depth</span></div>
+              <div class="meter"><b id="riskScore">--</b><span>Risk control</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="libraryView" class="workspace hidden">
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <h3>Question bank</h3>
+              <small>Pick a prompt and practice immediately.</small>
+            </div>
+          </div>
+          <div class="panel-body library" id="questionBank"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <h3>Saved notes</h3>
+              <small>Collected from your sessions.</small>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="notes-list" id="notesList"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="logView" class="panel hidden">
+        <div class="panel-header">
+          <div>
+            <h3>Practice log</h3>
+            <small>Stored locally in this browser.</small>
+          </div>
+          <button id="clearLog">Clear log</button>
+        </div>
+        <div class="panel-body">
+          <table class="practice-log">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Role</th>
+                <th>Type</th>
+                <th>Question</th>
+                <th>Focus</th>
+              </tr>
+            </thead>
+            <tbody id="logBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const prompts = [
+      ["Behavioral", "Tell me about a time you handled ambiguous requirements."],
+      ["Behavioral", "Describe a conflict with a teammate and how you resolved it."],
+      ["System design", "Design a notification system for millions of users."],
+      ["Technical", "How would you improve performance in a slow web application?"],
+      ["Leadership", "How do you raise engineering quality without slowing delivery?"],
+      ["Product sense", "How would you decide whether to build or buy a new feature?"]
+    ];
+
+    const store = {
+      notes: JSON.parse(localStorage.getItem("coachNotes") || "[]"),
+      log: JSON.parse(localStorage.getItem("coachLog") || "[]")
+    };
+
+    const $ = (selector) => document.querySelector(selector);
+    const $$ = (selector) => [...document.querySelectorAll(selector)];
+
+    function escapeHtml(value) {
+      return value.replace(/[&<>"']/g, (match) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "\"": "&quot;",
+        "'": "&#039;"
+      }[match]));
+    }
+
+    function sentenceCase(value) {
+      return value ? value.charAt(0).toUpperCase() + value.slice(1) : value;
+    }
+
+    function keywords(text) {
+      const stop = new Set("about after again also because been being could from have into that their there they this with would your".split(" "));
+      return [...new Set(text.toLowerCase().match(/[a-z][a-z-]{3,}/g) || [])]
+        .filter((word) => !stop.has(word))
+        .slice(0, 7);
+    }
+
+    function score(question, type) {
+      const words = question.trim().split(/\s+/).filter(Boolean).length;
+      return {
+        clarity: Math.min(98, Math.max(54, words * 5 + 42)),
+        depth: type === "System design" || type === "Leadership" ? 86 : Math.min(92, words * 4 + 46),
+        risk: question.includes("never") || question.includes("always") ? 68 : 84
+      };
+    }
+
+    function buildCoaching() {
+      const role = $("#roleInput").value.trim() || "the role";
+      const company = $("#companyInput").value.trim() || "the company";
+      const type = $("#typeInput").value;
+      const question = $("#questionInput").value.trim();
+
+      if (!question) {
+        $("#questionInput").focus();
+        return;
+      }
+
+      const terms = keywords(question);
+      const topic = terms[0] ? sentenceCase(terms[0]) : "the core problem";
+      const focus = terms.slice(0, 4).join(", ") || type.toLowerCase();
+      const scores = score(question, type);
+
+      $("#planTab").innerHTML = `
+        <h4>Fast answer shape</h4>
+        <ul>
+          <li>Open with a one-sentence thesis tailored to ${escapeHtml(role)} at ${escapeHtml(company)}.</li>
+          <li>Name the constraint: impact, timeline, reliability, stakeholder trust, or customer risk.</li>
+          <li>Give two concrete moves you would make, then explain the tradeoff behind each one.</li>
+          <li>Close with a measurable result or the signal you would monitor next.</li>
+        </ul>
+        <h4>Best angle</h4>
+        <p>Lead with ${escapeHtml(topic)} and connect it to business impact. Keep the answer specific enough that it sounds lived-in, not memorized.</p>
+      `;
+
+      $("#storyTab").innerHTML = `
+        <h4>STAR draft</h4>
+        <p><strong>Situation:</strong> Set the scene in one sentence and mention why it mattered.</p>
+        <p><strong>Task:</strong> State your ownership clearly: what decision, system, or outcome was yours?</p>
+        <p><strong>Action:</strong> Walk through three actions: diagnosis, alignment, execution.</p>
+        <p><strong>Result:</strong> Quantify the change, then add what you learned.</p>
+        <h4>Follow-up question to ask</h4>
+        <p>"For this role, where would you expect someone to make the biggest impact in the first 90 days?"</p>
+      `;
+
+      $("#reviewTab").innerHTML = `
+        <h4>Watch-outs</h4>
+        <ul>
+          <li>Do not answer with a generic framework only. Add a specific example or decision.</li>
+          <li>Avoid blaming previous teams, managers, or constraints.</li>
+          <li>If you are unsure, say what assumption you are making before you answer.</li>
+        </ul>
+        <h4>Focus words</h4>
+        <p>${escapeHtml(focus)}</p>
+      `;
+
+      $("#clarityScore").textContent = scores.clarity;
+      $("#depthScore").textContent = scores.depth;
+      $("#riskScore").textContent = scores.risk;
+      logPractice({ role, type, question, focus });
+      updateCounts();
+      renderLog();
+    }
+
+    function logPractice(entry) {
+      store.log.unshift({
+        ...entry,
+        date: new Date().toLocaleDateString(undefined, { month: "short", day: "numeric" })
+      });
+      store.log = store.log.slice(0, 20);
+      localStorage.setItem("coachLog", JSON.stringify(store.log));
+    }
+
+    function saveNote() {
+      const question = $("#questionInput").value.trim();
+      if (!question) return;
+      const focus = keywords(question).slice(0, 3).join(", ") || $("#typeInput").value;
+      store.notes.unshift({ question, focus });
+      store.notes = store.notes.slice(0, 12);
+      localStorage.setItem("coachNotes", JSON.stringify(store.notes));
+      renderNotes();
+      updateCounts();
+    }
+
+    function renderNotes() {
+      $("#notesList").innerHTML = store.notes.length ? store.notes.map((note) => `
+        <div class="note">
+          <strong>${escapeHtml(note.question)}</strong>
+          <p>${escapeHtml(note.focus)}</p>
+        </div>
+      `).join("") : `<div class="note"><strong>No notes yet</strong><p>Save a question from the coach view to keep it here.</p></div>`;
+    }
+
+    function renderLog() {
+      $("#logBody").innerHTML = store.log.length ? store.log.map((row) => `
+        <tr>
+          <td>${escapeHtml(row.date)}</td>
+          <td>${escapeHtml(row.role)}</td>
+          <td><span class="pill">${escapeHtml(row.type)}</span></td>
+          <td>${escapeHtml(row.question)}</td>
+          <td>${escapeHtml(row.focus)}</td>
+        </tr>
+      `).join("") : `<tr><td colspan="5">No practice sessions yet.</td></tr>`;
+    }
+
+    function updateCounts() {
+      $("#questionCount").textContent = store.log.length;
+      $("#noteCount").textContent = store.notes.length;
+    }
+
+    function showView(view) {
+      const titles = {
+        coach: ["Coach", "Paste a question from a mock interview and get a structured answer plan, risks to avoid, and a sharper follow-up question."],
+        library: ["Question bank", "Practice with realistic prompts, then save the ones you want to revisit."],
+        log: ["Practice log", "Review your recent sessions and spot patterns in the questions you are preparing for."]
+      };
+      $$(".nav-button").forEach((button) => button.classList.toggle("active", button.dataset.view === view));
+      $("#coachView").classList.toggle("hidden", view !== "coach");
+      $("#libraryView").classList.toggle("hidden", view !== "library");
+      $("#logView").classList.toggle("hidden", view !== "log");
+      $("#viewTitle").textContent = titles[view][0];
+      $("#viewSubtitle").textContent = titles[view][1];
+    }
+
+    function exportSession() {
+      const lines = [
+        "Interview Coach Session",
+        `Role: ${$("#roleInput").value || "Not set"}`,
+        `Company/domain: ${$("#companyInput").value || "Not set"}`,
+        `Type: ${$("#typeInput").value}`,
+        "",
+        "Question:",
+        $("#questionInput").value || "No question entered",
+        "",
+        "Notes:",
+        ...store.notes.map((note) => `- ${note.question} (${note.focus})`)
+      ];
+      const blob = new Blob([lines.join("\n")], { type: "text/plain" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "interview-coach-session.txt";
+      link.click();
+      URL.revokeObjectURL(link.href);
+    }
+
+    $("#coachButton").addEventListener("click", buildCoaching);
+    $("#saveNoteButton").addEventListener("click", saveNote);
+    $("#saveSession").addEventListener("click", exportSession);
+    $("#sampleButton").addEventListener("click", () => {
+      $("#roleInput").value = "Senior frontend engineer";
+      $("#companyInput").value = "B2B productivity SaaS";
+      $("#typeInput").value = "Behavioral";
+      $("#questionInput").value = "Tell me about a time you improved performance in a complex web application while balancing product deadlines.";
+      buildCoaching();
+    });
+    $("#clearQuestion").addEventListener("click", () => {
+      $("#questionInput").value = "";
+      $("#questionInput").focus();
+    });
+    $("#clearLog").addEventListener("click", () => {
+      store.log = [];
+      localStorage.setItem("coachLog", JSON.stringify(store.log));
+      renderLog();
+      updateCounts();
+    });
+    $$(".nav-button").forEach((button) => button.addEventListener("click", () => showView(button.dataset.view)));
+    $$(".tabs button").forEach((button) => {
+      button.addEventListener("click", () => {
+        $$(".tabs button").forEach((tab) => tab.classList.toggle("active", tab === button));
+        $$(".answer").forEach((panel) => panel.classList.remove("active"));
+        $(`#${button.dataset.tab}Tab`).classList.add("active");
+      });
+    });
+
+    $("#questionBank").innerHTML = prompts.map(([type, question]) => `
+      <button class="prompt-card" data-type="${escapeHtml(type)}" data-question="${escapeHtml(question)}">
+        ${escapeHtml(question)}
+        <span>${escapeHtml(type)}</span>
+      </button>
+    `).join("");
+    $$(".prompt-card").forEach((card) => {
+      card.addEventListener("click", () => {
+        $("#typeInput").value = card.dataset.type;
+        $("#questionInput").value = card.dataset.question;
+        showView("coach");
+        buildCoaching();
+      });
+    });
+
+    renderNotes();
+    renderLog();
+    updateCounts();
+  </script>
+</body>
+</html>
