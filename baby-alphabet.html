@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Baby Alphabet</title>
+  <meta name="description" content="A tiny full-screen terminal alphabet game for babies and toddlers.">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #090a0d;
+      --panel: #151820;
+      --panel-2: #1d2230;
+      --ink: #f7f7ff;
+      --muted: #b4b8c8;
+      --line: #30384d;
+      --accent: #6874ff;
+      --accent-2: #ffcf5a;
+      --green: #77dc93;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #050609;
+      color: var(--ink);
+    }
+
+    a { color: inherit; }
+
+    .shell {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    header {
+      padding: 22px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .back {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .repo {
+      min-height: 38px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 14px;
+      border-radius: 8px;
+      background: var(--ink);
+      color: #11131a;
+      text-decoration: none;
+      font-weight: 750;
+    }
+
+    .hero {
+      min-height: calc(100vh - 92px);
+      display: grid;
+      align-content: center;
+      gap: 28px;
+      padding-bottom: 44px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(48px, 10vw, 118px);
+      line-height: .88;
+      letter-spacing: 0;
+    }
+
+    .lede {
+      max-width: 780px;
+      color: #dfe2f0;
+      font-size: clamp(19px, 2.4vw, 28px);
+      line-height: 1.28;
+      margin: 0;
+    }
+
+    .preview {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      background: #000;
+    }
+
+    .preview img, .preview video {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin: 34px 0;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      padding: 18px;
+    }
+
+    .card b {
+      display: block;
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .card p, article p, article li {
+      color: var(--muted);
+      line-height: 1.58;
+    }
+
+    article {
+      padding: 18px 0 64px;
+      display: grid;
+      gap: 20px;
+    }
+
+    h2 {
+      margin: 22px 0 0;
+      font-size: clamp(28px, 4vw, 44px);
+      letter-spacing: 0;
+    }
+
+    pre {
+      overflow-x: auto;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: #0e1118;
+      padding: 16px;
+      color: #e9ecff;
+    }
+
+    code { font: 14px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+
+    @media (max-width: 760px) {
+      header { align-items: flex-start; flex-direction: column; }
+      .hero { min-height: auto; padding-top: 36px; }
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="shell">
+    <a class="back" href="/">Back to home</a>
+    <a class="repo" href="https://github.com/annpermi/baby_alphabet">View on GitHub</a>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div>
+        <h1>Baby Alphabet</h1>
+        <p class="lede">A tiny terminal game I made so my baby can press keys, fill the screen with color, and start connecting letters with animals.</p>
+      </div>
+      <figure class="preview">
+        <img src="assets/baby-alphabet-preview.png" alt="Baby Alphabet showing a huge blue D and DOG in the terminal">
+      </figure>
+    </section>
+
+    <section class="grid" aria-label="Highlights">
+      <div class="card">
+        <b>Made for curious little hands</b>
+        <p>Every letter key becomes a full-screen visual moment instead of random typing in a shell.</p>
+      </div>
+      <div class="card">
+        <b>Letters, animals, and colors</b>
+        <p>The screen shows a giant letter, a giant animal word, a matching sentence, and a same-letter color.</p>
+      </div>
+      <div class="card">
+        <b>Simple parent controls</b>
+        <p>It runs locally, needs no install beyond the script, and exits with a parent key sequence or by closing Terminal.</p>
+      </div>
+    </section>
+
+    <article>
+      <h2>Why I Built It</h2>
+      <p>Sometimes my baby is nearby while I am at the computer, and of course the keyboard is fascinating. I wanted a safe, playful thing to run when he reaches for the keys: no apps opening, no files changing, just a bright alphabet screen responding to him.</p>
+
+      <h2>How It Works</h2>
+      <p>Baby Alphabet is a single `zsh` script. It opens a full-screen terminal view, listens for `A-Z`, and redraws the screen with a large block letter, a large animal word, a color that starts with the same letter, and a small animal icon.</p>
+
+      <pre><code>cd ~/Desktop/toddler_alphabet_game
+/bin/zsh play.zsh</code></pre>
+
+      <h2>Demo</h2>
+      <figure class="preview">
+        <video src="assets/baby-alphabet-demo.mov" controls playsinline></video>
+      </figure>
+
+      <h2>What I Learned</h2>
+      <p>A terminal can be surprisingly expressive, but it has limits. Emoji cannot scale like text, and a shell script cannot fully lock macOS. The final version leans into what the terminal is good at: huge block letters, strong colors, and a simple interaction model that is hard for a baby to break.</p>
+    </article>
+  </main>
+</body>
+</html>
