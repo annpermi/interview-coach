@@ -4,6 +4,6 @@
   "private": true,
   "scripts": {
     "start": "vercel dev",
-    "build": "mkdir -p public && cp index.html public/index.html && cp baby-alphabet.html public/baby-alphabet.html && cp -R assets public/assets"
+    "build": "mkdir -p public && cp index.html public/index.html"
   }
 }
